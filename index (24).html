@@ -1,0 +1,1158 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Как создать встречу в Zoom</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #f0f7ff 0%, #e1f1ff 50%, #d1eaff 100%);
+            min-height: 100vh;
+            color: #333;
+            padding: 0;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .zoom-logo {
+            width: 50px;
+            height: 50px;
+            margin-right: 14px;
+        }
+
+        .language-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-btn {
+            padding: 0.5rem 1rem;
+            border: 2px solid #2D8CFF;
+            background: white;
+            color: #2D8CFF;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            min-width: 120px;
+            justify-content: space-between;
+        }
+
+        .dropdown-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(45, 140, 255, 0.3);
+        }
+
+        .dropdown-arrow {
+            transition: transform 0.3s ease;
+            font-size: 0.8rem;
+        }
+
+        .dropdown-btn.active .dropdown-arrow {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-content {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border: 2px solid #2D8CFF;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(45, 140, 255, 0.3);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            min-width: 150px;
+            overflow: hidden;
+        }
+
+        .dropdown-content.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-item {
+            padding: 0.8rem 1.2rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            border-bottom: 1px solid #f0f0f0;
+            font-weight: 500;
+            color: #2D8CFF;
+        }
+
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-item:hover {
+            background-color: #e3f2ff;
+        }
+
+        .dropdown-item.selected {
+            background-color: #2D8CFF;
+            color: white;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2.5rem 1rem;
+            width: 100%;
+        }
+
+        .hero-section {
+            text-align: center;
+            margin-bottom: 3rem;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .hero-title {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #2D8CFF, #0078FF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 1.4rem;
+            color: #666;
+            margin-bottom: 2rem;
+        }
+
+        .warning {
+            background: linear-gradient(135deg, #e3f2ff, #f0f8ff);
+            padding: 1rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            border-left: 4px solid #2D8CFF;
+        }
+
+        .warning-text {
+            color: #0078FF;
+            font-weight: 500;
+        }
+
+        .guide-sections {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .guide-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+
+        .steps-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            color: #2c3e50;
+        }
+
+        .step-accordion {
+            margin-bottom: 0.8rem;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .step-button {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(135deg, #2D8CFF, #0078FF);
+            color: white;
+            border: none;
+            padding: 1rem 1.2rem;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .step-button:hover {
+            background: linear-gradient(135deg, #0078FF, #004FCC);
+            transform: translateY(-1px);
+        }
+
+        .step-button.active {
+            background: linear-gradient(135deg, #0078FF, #004FCC);
+        }
+
+        .step-number {
+            background: rgba(255, 255, 255, 0.2);
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 1rem;
+            flex-shrink: 0;
+            font-size: 0.9rem;
+        }
+
+        .step-title {
+            flex: 1;
+            text-align: left;
+        }
+
+        .step-arrow {
+            transition: transform 0.3s ease;
+            font-size: 1.1rem;
+        }
+
+        .step-button.active .step-arrow {
+            transform: rotate(180deg);
+        }
+
+        .step-content {
+            background: white;
+            padding: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+        }
+
+        .step-content.active {
+            max-height: 2000px;
+            padding: 1.5rem;
+        }
+
+        .step-text {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 0.5rem;
+        }
+
+        .step-highlight {
+            background: linear-gradient(120deg, #2D8CFF20 0%, #2D8CFF10 100%);
+            padding: 0.6rem;
+            border-radius: 8px;
+            border-left: 3px solid #2D8CFF;
+            margin: 0.5rem 0;
+            font-size: 0.95rem;
+        }
+
+        .important-note {
+            background: linear-gradient(135deg, #2D8CFF, #0078FF);
+            color: white;
+            padding: 0.6rem;
+            border-radius: 8px;
+            margin: 0.5rem 0;
+            font-size: 0.95rem;
+            box-shadow: 0 3px 10px rgba(45, 140, 255, 0.3);
+        }
+
+        .step-image {
+            max-width: 100%;
+            max-height: 400px;
+            width: auto;
+            height: auto;
+            border-radius: 12px;
+            margin: 15px auto 25px;
+            box-shadow:
+                0 4px 20px 0 rgba(45, 140, 255, 0.16),
+                0 0px 0px 6px rgba(45, 140, 255, 0.06);
+            transition: box-shadow 0.2s, transform 0.2s;
+            border: 1.5px solid #e3f2ff;
+            display: block;
+            object-fit: contain;
+        }
+
+        .step-image:hover {
+            box-shadow:
+                0 8px 30px 2px rgba(45, 140, 255, 0.25),
+                0 0px 0px 10px rgba(45, 140, 255, 0.10);
+            transform: scale(1.02);
+        }
+
+        .code-table {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1rem;
+            margin: 1rem 0;
+            border: 1px solid #e9ecef;
+        }
+
+        .code-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .code-table th,
+        .code-table td {
+            padding: 0.5rem;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .code-table th {
+            background: #2D8CFF;
+            color: white;
+            font-weight: 600;
+        }
+
+        .code-table td:first-child {
+            font-weight: bold;
+            color: #2D8CFF;
+        }
+
+        .substep {
+            margin: 1rem 0;
+            padding-left: 1rem;
+            border-left: 2px solid #b3daff;
+        }
+
+        .substep h4 {
+            color: #0078FF;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        .contact-info {
+            background: linear-gradient(135deg, #ffffff, #ffffff);
+            padding: 1.5rem;
+            border-radius: 15px;
+            border-left: 4px solid #2D8CFF;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .contact-info p {
+            color: #0078FF;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .contact-email {
+            color: #004FCC;
+            font-weight: 700;
+            font-size: 1.3rem;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 1700px) {
+            .guide-sections {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .hero-section {
+                padding: 2rem 1rem;
+            }
+            
+            .hero-title {
+                font-size: 2rem;
+            }
+            
+            .header-content {
+                padding: 0 1rem;
+            }
+            
+            .step-button {
+                padding: 0.8rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .dropdown-content {
+                right: 0;
+                left: auto;
+            }
+
+            .step-image {
+                max-height: 300px;
+                transform: none;
+            }
+
+            .step-image:hover {
+                transform: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <svg class="zoom-logo" viewBox="0 0 50 50">
+                    <g>
+                        <rect fill="#2D8CFF" x="5" y="5" width="40" height="40" rx="8"/>
+                        <path fill="#fff" d="M15 20h20v3H15z"/>
+                        <path fill="#fff" d="M15 27h20v3H15z"/>
+                        <circle fill="#fff" cx="37" cy="15" r="3"/>
+                        <circle fill="#fff" cx="37" cy="35" r="3"/>
+                    </g>
+                </svg>
+            </div>
+            <div class="language-dropdown">
+                <button class="dropdown-btn" onclick="toggleDropdown()">
+                    <span id="selected-language">Русский</span>
+                    <span class="dropdown-arrow">▼</span>
+                </button>
+                <div class="dropdown-content" id="language-dropdown">
+                    <div class="dropdown-item selected" onclick="switchLanguage('ru', 'Русский')">Русский</div>
+                    <div class="dropdown-item" onclick="switchLanguage('en', 'English')">English</div>
+                    <div class="dropdown-item" onclick="switchLanguage('kz', 'Қазақша')">Қазақша</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Russian Content -->
+        <div id="content-ru">
+            <div class="hero-section">
+                <h1 class="hero-title">Как создать встречу в Zoom</h1>
+                <p class="hero-subtitle">Полное руководство по планированию конференций</p>
+            </div>
+
+            <div class="warning">
+                <p class="warning-text"><strong>Важная информация:</strong> Максимальное количество участников – 300. Максимальная длительность сессии – до 30 часов. Наша лицензия позволяет проводить одновременно не более 2 мероприятий.</p>
+            </div>
+
+            <div class="guide-sections">
+                <!-- Login Section -->
+                <div class="guide-section">
+                    <h2 class="steps-title">Вход в систему Zoom</h2>
+                    
+                    <div class="step-accordion">
+                        <button class="step-button" onclick="toggleStep(this, 'login-step-1-ru')">
+                            <div class="step-number">1</div>
+                            <div class="step-title">Переход на сайт Zoom</div>
+                            <div class="step-arrow">▼</div>
+                        </button>
+                        <div class="step-content" id="login-step-1-ru">
+                            <p class="step-text">Откройте сайт <a href="https://zoom.us/" target="_blank" style="color: #2D8CFF;">https://zoom.us/</a> и нажмите <strong>"Sign in"</strong>.</p>
+                            <img src="zoom-step-1.png" alt="Главная страница Zoom с кнопкой Sign In" class="step-image">
+                        </div>
+                    </div>
+
+                    <div class="step-accordion">
+                        <button class="step-button" onclick="toggleStep(this, 'login-step-2-ru')">
+                            <div class="step-number">2</div>
+                            <div class="step-title">Использование SSO</div>
+                            <div class="step-arrow">▼</div>
+                        </button>
+                        <div class="step-content" id="login-step-2-ru">
+                            <p class="step-text">Не вводим логин и пароль, сначала нужно нажать на кнопку <strong>"SSO"</strong>, и ввести название домена компании (Домен Компании) – <strong>airastana</strong>.</p>
+                            <img src="zoom-sso-login.png" alt="Страница входа с кнопкой SSO" class="step-image">
+                           
+                            <div class="important-note">
+                                <strong>Обратите внимание:</strong> Использйте только корпоративный домен airastana
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step-accordion">
+                        <button class="step-button" onclick="toggleStep(this, 'login-step-3-ru')">
+                            <div class="step-number">3</div>
+                            <div class="step-title">Ввод учетных данных</div>
+                            <div class="step-arrow">▼</div>
+                        </button>
+                        <div class="step-content" id="login-step-3-ru">
+                            <p class="step-text">Далее вводим логин и пароль от учетной записи.</p>
+                            <img src="zoom-credentials.png" alt="Форма ввода логина и пароля" class="step-image">
+                        </div>
+                    </div>
+
+                    <div class="step-accordion">
+                        <button class="step-button" onclick="toggleStep(this, 'login-step-4-ru')">
+                            <div class="step-number">4</div>
+                            <div class="step-title">Выбор приложения</div>
+                            <div class="step-arrow">▼</div>
+                        </button>
+                        <div class="step-content" id="login-step-4-ru">
+                            <p class="step-text">Из выпадающего списка выбираем <strong>ZOOM</strong> и нажимаем <strong>"Вход"</strong>.</p>
+                            <img src="zoom-app-selection.png" alt="Выпадающий список с выбором приложения ZOOM" class="step-image">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Meeting Creation Section -->
+                <div class="guide-section">
+                    <h2 class="steps-title">Создание встречи</h2>
+                    
+                    <div class="step-accordion">
+                        <button class="step-button" onclick="toggleStep(this, 'create-step-1-ru')">
+                            <div class="step-number">5</div>
+                            <div class="step-title">Планирование конференции</div>
+                            <div class="step-arrow">▼</div>
+                        </button>
+                        <div class="step-content" id="create-step-1-ru">
+                            <p class="step-text">Открываем вкладку <strong>"Конференции"</strong> и нажимаем <strong>"Запланировать конференцию"</strong> для создания встречи.</p>
+                            <img src="zoom-meetings-tab.png" alt="Вкладка Конференции с кнопкой Запланировать конференцию" class="step-image">
+                            <div class="important-note">
+                                <strong>Важно:</strong> В случае планирования более двух мероприятий, система автоматически удалит одного из ведущих и прекратит работу на мероприятии. Важно заранее запланировать все свои встречи, чтобы избежать подобных ситуаций.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step-accordion">
+                        <button class="step-button" onclick="toggleStep(this, 'create-step-2-ru')">
+                            <div class="step-number">6</div>
+                            <div class="step-title">Настройка встречи</div>
+                            <div class="step-arrow">▼</div>
+                        </button>
+                        <div class="step-content" id="create-step-2-ru">
+                            <p class="step-text">Вводим название встречи, указывая кодировку отдела, дату/время начала и длительность. Также добавляем описание встречи.</p>
+                            <img src="zoom-meeting-settings.png" alt="Форма настройки встречи с полями названия, времени и описания" class="step-image">
+                            <div class="code-table">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Код</th>
+                                            <th>Описание</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>SERV</td>
+                                            <td>Customer Service Training</td>
+                                        </tr>
+                                        <tr>
+                                            <td>CORP</td>
+                                            <td>Corporate Training</td>
+                                        </tr>
+                                        <tr>
+                                            <td>FOPS</td>
+                                            <td>Flight Operations Training</td>
+                                        </tr>
+                                        <tr>
+                                            <td>CS</td>
+                                            <td>Cabin Safety Training</td>
+                                        </tr>
+                                        <tr>
+                                            <td>GS</td>
+                                            <td>Ground Services Safety Training</td>
+                                        </tr>
+                                        <tr>
+                                            <td>EM</td>
+                                            <td>Training and Standards</td>
+                                        </tr>
+                                        <tr>
+                                            <td>PERSONAL</td>
+                                            <td>Personal meetings</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="step-highlight">
+                                <strong>Пример названия:</strong> CORP_PDP Module
+                            </div>
+                            <div class="important-note">
+                                <strong>Просим подробно называть ваши события и избегать использования общих названий, таких как "Meeting" или "Name's Link".</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step-accordion">
+                        <button class="step-button" onclick="toggleStep(this, 'create-step-3-ru')">
+                            <div class="step-number">7</div>
+                            <div class="step-title">Настройки безопасности</div>
+                            <div class="step-arrow">▼</div>
+                        </button>
+                        <div class="step-content" id="create-step-3-ru">
+                            <p class="step-text">Выбираем вариант присоединения участников:</p>
+                            <div class="substep">
+                                <h4>Код доступа</h4>
+                                <p class="step-text">При присоединении к встрече участнику необходимо ввести пароль.</p>
+                            </div>
+                            <div class="substep">
+                                <h4>Зал ожидания</h4>
+                                <p class="step-text">При присоединении участники попадают в "комнату ожидания", и модератор вручную впускает их на встречу.</p>
+                            </div>
+                            <img src="zoom-security-settings.png" alt="Настройки безопасности с опциями код доступа и зал ожидания" class="step-image">
+                        </div>
+                    </div>
+
+                    <div class="step-accordion">
+                        <button class="step-button" onclick="toggleStep(this, 'create-step-4-ru')">
+                            <div class="step-number">8</div>
+                            <div class="step-title">Сохранение и получение ссылки</div>
+                            <div class="step-arrow">▼</div>
+                        </button>
+                        <div class="step-content" id="create-step-4-ru">
+                            <p class="step-text">После сохранения изменений система сгенерирует ссылку для подключения, ее можно скопировать и отправлять всем участникам.</p>
+                            <img src="zoom-meeting-link.png" alt="Сгенерированная ссылка приглашения на встречу" class="step-image">
+                            <div class="important-note">
+                                <strong>Пожалуйста, используйте сгенерированную системой ссылку для созданного вами события.</strong> Использование устаревших ссылок или ссылок созданных под другими лицензиями/аккаунтами может привести к тому, что ваше событие не появится в списке событий и другие пользователи не смогут узнать о нем.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step-accordion">
+                        <button class="step-button" onclick="toggleStep(this, 'create-step-5-ru')">
+                            <div class="step-number">9</div>
+                            <div class="step-title">Начало встречи</div>
+                            <div class="step-arrow">▼</div>
+                        </button>
+                        <div class="step-content" id="create-step-5-ru">
+                            <p class="step-text">Для того, чтобы начать встречу, необходимо также зайти в систему под той же учетной записью, в разделе <strong>"Конференции"</strong> найти нужную встречу и нажать <strong>"Начать"</strong>.</p>
+                            <img src="zoom-start-meeting.png" alt="Список конференций с кнопкой Начать для запуска встречи" class="step-image">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer">
+                <div class="contact-info">
+                    <p>По вопросам обращайтесь:</p>
+                    <p class="contact-email">elearning.team@airastana.com</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- English Content -->
+        <div id="content-en" class="hidden">
+            <div class="hero-section">
+                <h1 class="hero-title">How to Create a Zoom Meeting</h1>
+                <p class="hero-subtitle">Complete Conference Planning Guide</p>
+            </div>
+
+            <div class="warning">
+                <p class="warning-text"><strong>Important Information:</strong> Maximum number of participants – 300. Maximum session duration – up to 30 hours. Our license allows conducting no more than 2 simultaneous events.</p>
+            </div>
+
+            <div class="guide-sections">
+                <!-- Login Section -->
+                <div class="guide-section">
+                    <h2 class="steps-title">Zoom System Login</h2>
+                    
+                    <div class="step-accordion">
+                        <button class="step-button" onclick="toggleStep(this, 'login-step-1-en')">
+                            <div class="step-number">1</div>
+                            <div class="step-title">Go to Zoom Website</div>
+                            <div class="step-arrow">▼</div>
+                        </button>
+                        <div class="step-content" id="login-step-1-en">
+                            <p class="step-text">Open the website <a href="https://zoom.us/" target="_blank" style="color: #2D8CFF;">https://zoom.us/</a> and click <strong>"Sign in"</strong>.</p>
+                            <img src="zoom-step-1.png" alt="Zoom homepage with Sign In button" class="step-image">
+                        </div>
+                    </div>
+
+                    <div class="step-accordion">
+                        <button class="step-button" onclick="toggleStep(this, 'login-step-2-en')">
+                            <div class="step-number">2</div>
+                            <div class="step-title">Using SSO</div>
+                            <div class="step-arrow">▼</div>
+                        </button>
+                        <div class="step-content" id="login-step-2-en">
+                            <p class="step-text">Don't enter login and password first. Click the <strong>"SSO"</strong> button and enter the company domain name – <strong>airastana</strong>.</p>
+                            <img src="zoom-sso-login.png" alt="Login page with SSO button" class="step-image">
+                            <img src="zoom-domain-input.png" alt="Company domain input field with airastana" class="step-image">
+                            <div class="important-note">
+                                <strong>Note:</strong> Use only the corporate domain airastana
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step-accordion">
+                        <button class="step-button" onclick="toggleStep(this, 'login-step-3-en')">
+                            <div class="step-number">3</div>
+                            <div class="step-title">Enter Credentials</div>
+                            <div class="step-arrow">▼</div>
+                        </button>
+                        <div class="step-content" id="login-step-3-en">
+                            <p class="step-text">Then enter your account login and password.</p>
+                            <img src="zoom-credentials.png" alt="Login and password input form" class="step-image">
+                        </div>
+                    </div>
+
+                    <div class="step-accordion">
+                        <button class="step-button" onclick="toggleStep(this, 'login-step-4-en')">
+                            <div class="step-number">4</div>
+                            <div class="step-title">Select Application</div>
+                            <div class="step-arrow">▼</div>
+                        </button>
+                        <div class="step-content" id="login-step-4-en">
+                            <p class="step-text">From the dropdown list, select <strong>ZOOM</strong> and click <strong>"Sign in"</strong>.</p>
+                            <img src="zoom-app-selection.png" alt="Dropdown list with ZOOM application selection" class="step-image">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Meeting Creation Section -->
+                <div class="guide-section">
+                    <h2 class="steps-title">Creating a Meeting</h2>
+                    
+                    <div class="step-accordion">
+                        <button class="step-button" onclick="toggleStep(this, 'create-step-1-en')">
+                            <div class="step-number">5</div>
+                            <div class="step-title">Schedule Conference</div>
+                            <div class="step-arrow">▼</div>
+                        </button>
+                        <div class="step-content" id="create-step-1-en">
+                            <p class="step-text">Open the <strong>"Meetings"</strong> tab and click <strong>"Schedule a Meeting"</strong> to create a meeting.</p>
+                            <img src="zoom-meetings-tab.png" alt="Meetings tab with Schedule a Meeting button" class="step-image">
+                            <div class="important-note">
+                                <strong>Important:</strong> If more than two events are scheduled, the system will automatically remove one of the hosts and stop the event. It's important to plan all your meetings in advance to avoid such situations.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step-accordion">
+                        <button class="step-button" onclick="toggleStep(this, 'create-step-2-en')">
+                            <div class="step-number">6</div>
+                            <div class="step-title">Configure Meeting</div>
+                            <div class="step-arrow">▼</div>
+                        </button>
+                        <div class="step-content" id="create-step-2-en">
+                            <p class="step-text">Enter the meeting name with department coding, start date/time and duration. Also add a meeting description.</p>
+                            <img src="zoom-meeting-settings.png" alt="Meeting setup form with name, time and description fields" class="step-image">
+                            <div class="code-table">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Code</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>SERV</td>
+                                            <td>Customer Service Training</td>
+                                        </tr>
+                                        <tr>
+                                            <td>CORP</td>
+                                            <td>Corporate Training</td>
+                                        </tr>
+                                        <tr>
+                                            <td>FOPS</td>
+                                            <td>Flight Operations Training</td>
+                                        </tr>
+                                        <tr>
+                                            <td>CS</td>
+                                            <td>Cabin Safety Training</td>
+                                        </tr>
+                                        <tr>
+                                            <td>GS</td>
+                                            <td>Ground Services Safety Training</td>
+                                        </tr>
+                                        <tr>
+                                            <td>EM</td>
+                                            <td>Training and Standards</td>
+                                        </tr>
+                                        <tr>
+                                            <td>PERSONAL</td>
+                                            <td>Personal meetings</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="step-highlight">
+                                <strong>Example name:</strong> CORP_PDP Module
+                            </div>
+                            <div class="important-note">
+                                <strong>Please name your events in detail and avoid using generic names such as "Meeting" or "Name's Link".</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step-accordion">
+                        <button class="step-button" onclick="toggleStep(this, 'create-step-3-en')">
+                            <div class="step-number">7</div>
+                            <div class="step-title">Security Settings</div>
+                            <div class="step-arrow">▼</div>
+                        </button>
+                        <div class="step-content" id="create-step-3-en">
+                            <p class="step-text">Choose participant joining options:</p>
+                            <div class="substep">
+                                <h4>Passcode</h4>
+                                <p class="step-text">When joining the meeting, participants need to enter a password.</p>
+                            </div>
+                            <div class="substep">
+                                <h4>Waiting Room</h4>
+                                <p class="step-text">When joining, participants enter a "waiting room", and the moderator manually admits them to the meeting.</p>
+                            </div>
+                            <img src="zoom-security-settings.png" alt="Security settings with passcode and waiting room options" class="step-image">
+                        </div>
+                    </div>
+
+                    <div class="step-accordion">
+                        <button class="step-button" onclick="toggleStep(this, 'create-step-4-en')">
+                            <div class="step-number">8</div>
+                            <div class="step-title">Save and Get Link</div>
+                            <div class="step-arrow">▼</div>
+                        </button>
+                        <div class="step-content" id="create-step-4-en">
+                            <p class="step-text">After saving changes, the system will generate a connection link that can be copied and sent to all participants.</p>
+                            <img src="zoom-meeting-link.png" alt="Generated meeting invitation link" class="step-image">
+                            <div class="important-note">
+                                <strong>Please use the system-generated link for your created event.</strong> Using outdated links or links created under other licenses/accounts may result in your event not appearing in the event list and other users not being able to know about it.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step-accordion">
+                        <button class="step-button" onclick="toggleStep(this, 'create-step-5-en')">
+                            <div class="step-number">9</div>
+                            <div class="step-title">Start Meeting</div>
+                            <div class="step-arrow">▼</div>
+                        </button>
+                        <div class="step-content" id="create-step-5-en">
+                            <p class="step-text">To start the meeting, you need to log into the system with the same account, find the required meeting in the <strong>"Meetings"</strong> section and click <strong>"Start"</strong>.</p>
+                            <img src="zoom-start-meeting.png" alt="Meetings list with Start button to launch meeting" class="step-image">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer">
+                <div class="contact-info">
+                    <p>For questions, contact:</p>
+                    <p class="contact-email">elearning.team@airastana.com</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Kazakh Content -->
+        <div id="content-kz" class="hidden">
+            <div class="hero-section">
+                <h1 class="hero-title">Zoom-да кездесу жасау</h1>
+                <p class="hero-subtitle">Конференция жоспарлаудың толық нұсқаулығы</p>
+            </div>
+
+            <div class="warning">
+                <p class="warning-text"><strong>Маңызды ақпарат:</strong> Қатысушылардың максималды саны – 300. Сессияның максималды ұзақтығы – 30 сағатқа дейін. Біздің лицензия бір уақытта 2-ден артық іс-шараны өткізуге мүмкіндік бермейді.</p>
+            </div>
+
+            <div class="guide-sections">
+                <!-- Login Section -->
+                <div class="guide-section">
+                    <h2 class="steps-title">Zoom жүйесіне кіру</h2>
+                    
+                    <div class="step-accordion">
+                        <button class="step-button" onclick="toggleStep(this, 'login-step-1-kz')">
+                            <div class="step-number">1</div>
+                            <div class="step-title">Zoom сайтына өту</div>
+                            <div class="step-arrow">▼</div>
+                        </button>
+                        <div class="step-content" id="login-step-1-kz">
+                            <p class="step-text"><a href="https://zoom.us/" target="_blank" style="color: #2D8CFF;">https://zoom.us/</a> сайтын ашып, <strong>"Sign in"</strong> батырмасын басыңыз.</p>
+                            <img src="zoom-step-1.png" alt="Sign In батырмасы бар Zoom басты бетi" class="step-image">
+                        </div>
+                    </div>
+
+                    <div class="step-accordion">
+                        <button class="step-button" onclick="toggleStep(this, 'login-step-2-kz')">
+                            <div class="step-number">2</div>
+                            <div class="step-title">SSO пайдалану</div>
+                            <div class="step-arrow">▼</div>
+                        </button>
+                        <div class="step-content" id="login-step-2-kz">
+                            <p class="step-text">Логин мен құпиясөзді енгізбей, алдымен <strong>"SSO"</strong> батырмасын басып, компания доменін енгізіңіз – <strong>airastana</strong>.</p>
+                            <img src="zoom-sso-login.png" alt="SSO батырмасы бар кіру бетi" class="step-image">
+                            <img src="zoom-domain-input.png" alt="airastana компания доменін енгізу өрісі" class="step-image">
+                            <div class="important-note">
+                                <strong>Назар аударыңыз:</strong> Тек airastana корпоративтік доменін пайдаланыңыз
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step-accordion">
+                        <button class="step-button" onclick="toggleStep(this, 'login-step-3-kz')">
+                            <div class="step-number">3</div>
+                            <div class="step-title">Деректемелерді енгізу</div>
+                            <div class="step-arrow">▼</div>
+                        </button>
+                        <div class="step-content" id="login-step-3-kz">
+                            <p class="step-text">Содан кейін тіркелгі логинін және құпиясөзін енгізіңіз.</p>
+                            <img src="zoom-credentials.png" alt="Логин мен құпиясөз енгізу формасы" class="step-image">
+                        </div>
+                    </div>
+
+                    <div class="step-accordion">
+                        <button class="step-button" onclick="toggleStep(this, 'login-step-4-kz')">
+                            <div class="step-number">4</div>
+                            <div class="step-title">Қолданбаны таңдау</div>
+                            <div class="step-arrow">▼</div>
+                        </button>
+                        <div class="step-content" id="login-step-4-kz">
+                            <p class="step-text">Ашылмалы тізімнен <strong>ZOOM</strong> таңдап, <strong>"Кіру"</strong> батырмасын басыңыз.</p>
+                            <img src="zoom-app-selection.png" alt="ZOOM қолданбасын таңдау ашылмалы тізімі" class="step-image">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Meeting Creation Section -->
+                <div class="guide-section">
+                    <h2 class="steps-title">Кездесу жасау</h2>
+                    
+                    <div class="step-accordion">
+                        <button class="step-button" onclick="toggleStep(this, 'create-step-1-kz')">
+                            <div class="step-number">5</div>
+                            <div class="step-title">Конференция жоспарлау</div>
+                            <div class="step-arrow">▼</div>
+                        </button>
+                        <div class="step-content" id="create-step-1-kz">
+                            <p class="step-text"><strong>"Конференциялар"</strong> қойыншасын ашып, кездесу жасау үшін <strong>"Конференция жоспарлау"</strong> батырмасын басыңыз.</p>
+                            <img src="zoom-meetings-tab.png" alt="Конференция жоспарлау батырмасы бар Конференциялар қойыншасы" class="step-image">
+                            <div class="important-note">
+                                <strong>Маңызды:</strong> Екіден көп іс-шара жоспарланған жағдайда, жүйе автоматты түрде жетекшілердің бірін алып тастап, іс-шараны тоқтатады. Мұндай жағдайларды болдырмау үшін барлық кездесулерді алдын ала жоспарлау маңызды.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step-accordion">
+                        <button class="step-button" onclick="toggleStep(this, 'create-step-2-kz')">
+                            <div class="step-number">6</div>
+                            <div class="step-title">Кездесуді баптау</div>
+                            <div class="step-arrow">▼</div>
+                        </button>
+                        <div class="step-content" id="create-step-2-kz">
+                            <p class="step-text">Бөлім кодын көрсете отырып кездесу атауын, басталу күні/уақыты мен ұзақтығын енгізіңіз. Сондай-ақ кездесу сипаттамасын қосыңыз.</p>
+                            <img src="zoom-meeting-settings.png" alt="Атау, уақыт және сипаттама өрістері бар кездесу баптау формасы" class="step-image">
+                            <div class="code-table">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Код</th>
+                                            <th>Сипаттама</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>SERV</td>
+                                            <td>Тұтынушылық қызмет тренингі</td>
+                                        </tr>
+                                        <tr>
+                                            <td>CORP</td>
+                                            <td>Корпоративтік тренинг</td>
+                                        </tr>
+                                        <tr>
+                                            <td>FOPS</td>
+                                            <td>Ұшу операциялары тренингі</td>
+                                        </tr>
+                                        <tr>
+                                            <td>CS</td>
+                                            <td>Салон қауіпсіздігі тренингі</td>
+                                        </tr>
+                                        <tr>
+                                            <td>GS</td>
+                                            <td>Жер қызметі қауіпсіздігі тренингі</td>
+                                        </tr>
+                                        <tr>
+                                            <td>EM</td>
+                                            <td>Тренинг және стандарттар</td>
+                                        </tr>
+                                        <tr>
+                                            <td>PERSONAL</td>
+                                            <td>Жеке кездесулер</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="step-highlight">
+                                <strong>Атау үлгісі:</strong> CORP_PDP Module
+                            </div>
+                            <div class="important-note">
+                                <strong>Өз іс-шараларыңызды толық атаңыз және "Meeting" немесе "Name's Link" сияқты жалпы атауларды пайдаланудан аулақ болыңыз.</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step-accordion">
+                        <button class="step-button" onclick="toggleStep(this, 'create-step-3-kz')">
+                            <div class="step-number">7</div>
+                            <div class="step-title">Қауіпсіздік параметрлері</div>
+                            <div class="step-arrow">▼</div>
+                        </button>
+                        <div class="step-content" id="create-step-3-kz">
+                            <p class="step-text">Қатысушылардың қосылу нұсқасын таңдаңыз:</p>
+                            <div class="substep">
+                                <h4>Қол жеткізу коды</h4>
+                                <p class="step-text">Кездесуге қосылу кезінде қатысушы құпиясөзді енгізуі керек.</p>
+                            </div>
+                            <div class="substep">
+                                <h4>Күту залы</h4>
+                                <p class="step-text">Қосылу кезінде қатысушылар "күту бөлмесіне" түседі, және модератор оларды кездесуге қолмен жібереді.</p>
+                            </div>
+                            <img src="zoom-security-settings.png" alt="Қол жеткізу коды және күту залы опциялары бар қауіпсіздік параметрлері" class="step-image">
+                        </div>
+                    </div>
+
+                    <div class="step-accordion">
+                        <button class="step-button" onclick="toggleStep(this, 'create-step-4-kz')">
+                            <div class="step-number">8</div>
+                            <div class="step-title">Сақтау және сілтеме алу</div>
+                            <div class="step-arrow">▼</div>
+                        </button>
+                        <div class="step-content" id="create-step-4-kz">
+                            <p class="step-text">Өзгерістерді сақтағаннан кейін жүйе қосылу сілтемесін жасайды, оны көшіруге және барлық қатысушыларға жіберуге болады.</p>
+                            <img src="zoom-meeting-link.png" alt="Жасалған кездесуге шақыру сілтемесі" class="step-image">
+                            <div class="important-note">
+                                <strong>Жасаған іс-шарай үшін жүйе жасаған сілтемені пайдаланыңыз.</strong> Ескірген сілтемелерді немесе басқа лицензиялар/тіркелгілер астында жасалған сілтемелерді пайдалану сіздің іс-шарайыңыз іс-шаралар тізімінде көрінбеуіне әкелуі мүмкін.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step-accordion">
+                        <button class="step-button" onclick="toggleStep(this, 'create-step-5-kz')">
+                            <div class="step-number">9</div>
+                            <div class="step-title">Кездесуді бастау</div>
+                            <div class="step-arrow">▼</div>
+                        </button>
+                        <div class="step-content" id="create-step-5-kz">
+                            <p class="step-text">Кездесуді бастау үшін сол тіркелгімен жүйеге кіріп, <strong>"Конференциялар"</strong> бөлімінде қажетті кездесуді тауып <strong>"Бастау"</strong> батырмасын басу керек.</p>
+                            <img src="zoom-start-meeting.png" alt="Кездесуді іске қосу үшін Бастау батырмасы бар кездесулер тізімі" class="step-image">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer">
+                <div class="contact-info">
+                    <p>Сұрақтар бойынша:</p>
+                    <p class="contact-email">elearning.team@airastana.com</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+       let currentLanguage = 'ru';
+
+        function toggleDropdown() {
+            const dropdown = document.getElementById('language-dropdown');
+            const button = document.querySelector('.dropdown-btn');
+            
+            dropdown.classList.toggle('show');
+            button.classList.toggle('active');
+        }
+
+        function switchLanguage(lang, displayName) {
+            currentLanguage = lang;
+            
+            // Update dropdown
+            document.getElementById('selected-language').textContent = displayName;
+            
+            // Update selected item in dropdown
+            document.querySelectorAll('.dropdown-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            event.target.classList.add('selected');
+
+            // Hide all content
+            document.getElementById('content-ru').classList.add('hidden');
+            document.getElementById('content-en').classList.add('hidden');
+            document.getElementById('content-kz').classList.add('hidden');
+            
+            // Show selected language content
+            document.getElementById('content-' + lang).classList.remove('hidden');
+            
+            // Close all open steps when switching language
+            document.querySelectorAll('.step-content.active').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.querySelectorAll('.step-button.active').forEach(button => {
+                button.classList.remove('active');
+            });
+
+            // Close dropdown
+            document.getElementById('language-dropdown').classList.remove('show');
+            document.querySelector('.dropdown-btn').classList.remove('active');
+        }
+
+        function toggleStep(button, contentId) {
+            const content = document.getElementById(contentId);
+            const isActive = content.classList.contains('active');
+            
+            // Close all other steps
+            document.querySelectorAll('.step-content').forEach(c => {
+                if (c !== content) {
+                    c.classList.remove('active');
+                }
+            });
+            document.querySelectorAll('.step-button').forEach(b => {
+                if (b !== button) {
+                    b.classList.remove('active');
+                }
+            });
+            
+            // Toggle current step
+            if (isActive) {
+                content.classList.remove('active');
+                button.classList.remove('active');
+            } else {
+                content.classList.add('active');
+                button.classList.add('active');
+            }
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const dropdown = document.querySelector('.language-dropdown');
+            if (!dropdown.contains(event.target)) {
+                document.getElementById('language-dropdown').classList.remove('show');
+                document.querySelector('.dropdown-btn').classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>
